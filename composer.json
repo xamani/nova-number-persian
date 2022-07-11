@@ -1,6 +1,6 @@
 {
     "name": "xamani/nova-persian-number",
-    "description": "A Laravel Nova field.",
+    "description": "Laravel Nova Number field with display of Persian letters.",
     "keywords": [
         "laravel",
         "nova"

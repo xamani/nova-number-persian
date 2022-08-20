@@ -1,18 +1,18 @@
 <template>
-    <default-field :field="field" :errors="errors">
-        <template slot="field">
+    <DefaultField :field="field" :errors="errors" :show-help-text="showHelpText">
+        <template #field>
             <input
-                :id="field.name"
+                :id="field.attribute"
                 type="text"
                 class="w-full form-control form-input form-input-bordered"
                 :class="errorClasses"
                 :placeholder="field.name"
-                :value="formattedNumber"
+                v-model="formattedNumber"
                 @input="handleChange"
             />
             <p>{{ numbersText }}</p>
         </template>
-    </default-field>
+    </DefaultField>
 </template>
 
 <script>
@@ -23,14 +23,14 @@ import pn from "persian-number";
 export default {
     mixins: [FormField, HandlesValidationErrors],
 
-    props: ["resourceName", "resourceId", "field"],
+    props: ['resourceName', 'resourceId', 'field'],
 
     methods: {
         /*
          * Set the initial, internal value for the field.
          */
         setInitialValue() {
-            this.value = this.field.value || "";
+            this.value = this.field.value || ''
         },
 
         /**
@@ -39,7 +39,7 @@ export default {
         fill(formData) {
             formData.append(
                 this.field.attribute,
-                numeral(this.formattedNumber).value() || ""
+                numeral(this.formattedNumber).value() || ''
             );
         },
 
@@ -47,6 +47,7 @@ export default {
          * Update the field's internal value.
          */
         handleChange(value) {
+            this.value = value.target.value || '';
             this.numbersText = pn.convert(numeral(value.target.value).value()) + ' ' + this.field.moneyUnit;
 
             this.value = value.target.value;
@@ -55,9 +56,30 @@ export default {
     },
 
     computed: {
+        defaultAttributes() {
+            return {
+                type: this.field.type || 'text',
+                class: this.errorClasses,
+            }
+        },
+
         formattedNumber(number) {
+            this.numbersText = pn.convert(numeral(number.value).value()) + ' ' + this.field.moneyUnit;
+
             return numeral(number.value).format(this.field.format);
-        }
+        },
+
+        extraAttributes() {
+            const attrs = this.field.extraAttributes
+
+            return {
+                // Leave the default attributes even though we can now specify
+                // whatever attributes we like because the old number field still
+                // uses the old field attributes
+                ...this.defaultAttributes,
+                ...attrs,
+            }
+        },
     }
-};
+}
 </script>

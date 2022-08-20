@@ -8,7 +8,10 @@ You can install the package via composer:
 ```bash
 composer require xamani/nova-persian-number
 ```
-
+### for nova 3 or above
+```bash
+composer require xamani/nova-persian-number:^1.0
+```
 ## Usage
 
 ```php
